@@ -1,0 +1,16 @@
+{
+  "name": "synaptechmetrics",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "tauri": "tauri"
+  },
+  "devDependencies": {
+    "@tauri-apps/cli": "^2"
+  },
+  "dependencies": {
+    "@mnlphlp/plugin-blec": "^0.4.1",
+    "@tauri-apps/api": "^2.5.0"
+  }
+}

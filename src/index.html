@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <link rel="stylesheet" href="styles.css" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Synaptech Metrics</title>
+        <script type="module" src="/main.js" defer></script>
+    </head>
+
+    <body>
+        <main class="container">
+            <div class="row">
+                <img
+                    style="width: 200px; text-align: center"
+                    src="/assets/dnt.png"
+                />
+            </div>
+            <h1>Metrics</h1>
+            <div
+                style="
+                    background-color: rgb(30, 30, 30);
+                    border-radius: 15px;
+                    margin: 20px auto;
+                    margin-top: 50px;
+                    padding: 20px;
+                    width: 80%;
+                    height: calc(100vh - 495px);
+                    overflow-y: auto;
+                    text-align: left;
+                "
+            >
+                <div>
+                    <label for="saveName"
+                        ><span
+                            style="
+                                display: inline-block;
+                                background-color: purple;
+                                border-radius: 5px;
+                                padding: 0 5px;
+                                font-size: 12px;
+                                color: white;
+                                vertical-align: middle;
+                                margin-bottom: 6px;
+                            "
+                            >LSL</span
+                        >
+                        Stream Name</label
+                    >
+                    <input
+                        type="text"
+                        id="saveName"
+                        placeholder="e.g. SynaptechMetrics"
+                        value="SynaptechMetrics"
+                        style="
+                            flex-grow: 1;
+                            width: 90%;
+                            border-radius: 5px;
+                            border: none;
+                            margin-bottom: 5px;
+                        "
+                    />
+                </div>
+                <div style="margin-top: 5px">
+                    <label for="ipAddr"
+                        ><span
+                            style="
+                                display: inline-block;
+                                background-color: orange;
+                                border-radius: 5px;
+                                padding: 0 5px;
+                                font-size: 12px;
+                                color: black;
+                                vertical-align: middle;
+                                margin-bottom: 6px;
+                            "
+                            >OSC</span
+                        >
+                        Destination IP Address</label
+                    >
+                    <input
+                        type="text"
+                        id="ipAddr"
+                        value="localhost"
+                        placeholder="e.g. localhost"
+                        style="
+                            flex-grow: 1;
+                            width: 90%;
+                            border-radius: 5px;
+                            border: none;
+                            margin-bottom: 5px;
+                        "
+                    />
+                </div>
+                <div style="margin-top: 5px">
+                    <label for="port"
+                        ><span
+                            style="
+                                display: inline-block;
+                                background-color: orange;
+                                border-radius: 5px;
+                                padding: 0 5px;
+                                font-size: 12px;
+                                color: black;
+                                vertical-align: middle;
+                                margin-bottom: 6px;
+                            "
+                            >OSC</span
+                        >
+                        Destination Port</label
+                    >
+                    <input
+                        type="text"
+                        id="port"
+                        value="14739"
+                        placeholder="e.g. 14739"
+                        style="
+                            flex-grow: 1;
+                            width: 90%;
+                            border-radius: 5px;
+                            border: none;
+                            margin-bottom: 20px;
+                        "
+                    />
+                </div>
+                <div id="streamButtons" style="display: none">
+                    <button id="streamLSL" style="width: 49%">
+                        Stream LSL
+                    </button>
+                    <button id="streamOSC" style="width: 49%">
+                        Stream OSC
+                    </button>
+                </div>
+                <div id="connectWait" style="width: 100%; text-align: center">
+                    <p>Connect to a Muse device to start streaming.</p>
+                </div>
+            </div>
+            <div
+                style="
+                    position: fixed;
+                    bottom: 20px;
+                    width: 100%;
+                    text-align: center;
+                "
+            >
+                <p id="bluetoothStatus" style="display: none">Discovering...</p>
+                <button id="bluetooth" style="width: 80%; margin: 0">
+                    Connect
+                </button>
+            </div>
+        </main>
+    </body>
+</html>
