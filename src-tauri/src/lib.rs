@@ -1,4 +1,6 @@
 // james was here
+use lsl;
+use lsl::Pushable;
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 use rosc::{encoder, OscMessage, OscPacket, OscType};
 use std::collections::HashMap;
@@ -15,8 +17,87 @@ const AUX: Uuid = uuid!("273e0007-4c4d-454d-96be-f03bac821358");
 const ALL_SENSORS_ORDERED: [Uuid; 5] = [TP9, AF7, AF8, TP10, AUX];
 const OSC_ADDRESS_PATH: &str = "/eeg";
 
+#[tauri::command]
 fn stream_lsl(stream_name: String) {
-    println!("LSL not implemented... yet... Would stream {}", stream_name);
+    use std::{
+        collections::HashMap,
+        sync::{Arc, Mutex},
+    };
+
+    // ---------- thread-safe wrapper around StreamOutlet ------------------------
+    struct SafeOutlet(lsl::StreamOutlet);
+    unsafe impl Send for SafeOutlet {}
+    unsafe impl Sync for SafeOutlet {}
+    impl SafeOutlet {
+        fn push(&self, sample: &Vec<f32>) -> Result<(), lsl::Error> {
+            self.0.push_sample(sample) // <- Vec<f32>, not &[f32]
+        }
+    }
+
+    // ---------- create the LSL outlet -----------------------------------------
+    let info = lsl::StreamInfo::new(
+        &stream_name,
+        "EEG",
+        ALL_SENSORS_ORDERED.len() as u32, // 5 channels
+        0.0,                              // irregular/no fixed rate
+        lsl::ChannelFormat::Float32,
+        "rust-lsl", // source-id
+    )
+    .expect("StreamInfo failed");
+
+    let outlet = Arc::new(SafeOutlet(
+        lsl::StreamOutlet::new(&info, 0, 360).expect("StreamOutlet failed"),
+    ));
+
+    // ---------- cache for the most-recent sample values ------------------------
+    let latest = Arc::new(Mutex::new(HashMap::<Uuid, f32>::new()));
+
+    // ---------- subscribe to each EEG characteristic --------------------------
+    tauri::async_runtime::block_on(async move {
+        let ble = match tauri_plugin_blec::get_handler() {
+            Ok(h) => h,
+            Err(e) => {
+                eprintln!("BLE handler error: {e:?}");
+                return;
+            }
+        };
+
+        for &uuid in ALL_SENSORS_ORDERED.iter() {
+            let cache = Arc::clone(&latest);
+            let out = Arc::clone(&outlet);
+
+            let _ = ble
+                .subscribe(uuid, move |data: Vec<u8>| {
+                    // quick-n-dirty: first byte → f32
+                    let v = *data.get(0).unwrap_or(&0) as f32;
+
+                    {
+                        let mut g = cache.lock().unwrap();
+                        g.insert(uuid, v);
+                    }
+
+                    // assemble 5-channel sample (missing chans = 0.0)
+                    let sample: Vec<f32> = {
+                        let g = cache.lock().unwrap();
+                        ALL_SENSORS_ORDERED
+                            .iter()
+                            .map(|id| *g.get(id).unwrap_or(&0.0))
+                            .collect()
+                    };
+
+                    if let Err(e) = out.push(&sample) {
+                        eprintln!("LSL push error: {e:?}");
+                    }
+                })
+                .await;
+
+            println!("LSL: subscribed to {uuid}");
+        }
+
+        println!("LSL streaming active.");
+    });
+
+    println!("stream_lsl initialised; data flows in the background.");
 }
 
 #[tauri::command]
@@ -113,6 +194,7 @@ pub fn run() {
     tauri::Builder::default()
         .plugin(tauri_plugin_blec::init())
         .invoke_handler(tauri::generate_handler![stream_osc])
+        .invoke_handler(tauri::generate_handler![stream_lsl])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }

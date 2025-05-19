@@ -62,6 +62,24 @@ document.getElementById("streamOSC").addEventListener("click", function () {
     document.getElementById("port").disabled = true;
 
     invoke("stream_osc", { ip: ip, port_str: port });
+    document.getElementById("streamOSC").disabled = true;
+    document.getElementById("streamOSC").innerHTML = "Streaming OSC";
+    document.getElementById("streamOSC").style.backgroundColor =
+      "rgb(33, 109, 30)";
+  }
+});
+
+document.getElementById("streamLSL").addEventListener("click", function () {
+  var name = document.getElementById("saveName").value;
+
+  if (connected) {
+    document.getElementById("saveName").disabled = true;
+
+    invoke("stream_lsl", { stream_name: name });
+    document.getElementById("streamLSL").disabled = true;
+    document.getElementById("streamLSL").innerHTML = "Streaming LSL";
+    document.getElementById("streamLSL").style.backgroundColor =
+      "rgb(33, 109, 30)";
   }
 });
 
@@ -76,7 +94,7 @@ document.getElementById("bluetooth").addEventListener("click", function () {
   });
   setTimeout(function () {
     if (!connected && !connecting) {
-      document.getElementById("bluetooth").innerHTML = "Couldn't Find Device";
+      document.getElementById("bluetooth").innerHTML = "Try Again";
       document.getElementById("bluetooth").style.backgroundColor =
         "rgb(118, 46, 42)";
       document.getElementById("bluetoothStatus").innerHTML = "Muse not found.";

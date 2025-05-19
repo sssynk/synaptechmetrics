@@ -548,6 +548,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "cmake"
+version = "0.1.54"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "e7caa3f9de89ddbe2c607f4101924c5abec803763ae9534e4f4d7d8f84aa81f0"
+dependencies = [
+ "cc",
+]
+
+[[package]]
 name = "combine"
 version = "4.6.7"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2112,6 +2121,22 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "13dc2df351e3202783a1fe0d44375f7295ffb4049267b0f3018346dc122a1d94"
 
 [[package]]
+name = "lsl"
+version = "0.1.1"
+source = "git+https://github.com/labstreaminglayer/liblsl-rust.git?branch=main#afa1d251674591c11ebc06070de60914b6dafccf"
+dependencies = [
+ "lsl-sys",
+]
+
+[[package]]
+name = "lsl-sys"
+version = "0.1.1"
+source = "git+https://github.com/labstreaminglayer/liblsl-rust.git?branch=main#afa1d251674591c11ebc06070de60914b6dafccf"
+dependencies = [
+ "cmake",
+]
+
+[[package]]
 name = "mac"
 version = "0.1.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -3671,7 +3696,9 @@ name = "synaptechmetrics"
 version = "0.1.0"
 dependencies = [
  "anyhow",
+ "base64 0.22.1",
  "btleplug",
+ "lsl",
  "rand 0.9.1",
  "rosc",
  "serde",

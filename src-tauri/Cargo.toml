@@ -29,3 +29,5 @@ tokio = "1.45.0"
 uuid = "1.16.0"
 rosc = "0.11.4"
 anyhow = "1.0.98"
+lsl = { git = "https://github.com/labstreaminglayer/liblsl-rust.git", branch = "main" }
+base64 = "0.22.1"
