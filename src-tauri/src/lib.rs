@@ -193,8 +193,7 @@ fn stream_osc(ip: String, port_str: String) {
 pub fn run() {
     tauri::Builder::default()
         .plugin(tauri_plugin_blec::init())
-        .invoke_handler(tauri::generate_handler![stream_osc])
-        .invoke_handler(tauri::generate_handler![stream_lsl])
+        .invoke_handler(tauri::generate_handler![stream_osc, stream_lsl])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }
