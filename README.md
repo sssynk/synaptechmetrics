@@ -6,5 +6,4 @@ An open source replacement for Petal Metrics written in Rust. Streams data from 
 ## To-Do List
 - [x] Interface Design
 - [x] OSC Streaming
-- [ ] LSL Streaming
-- [ ] Multi-device support
+- [x] LSL Streaming
